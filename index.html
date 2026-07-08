@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power BI & Gemini AI Insight Chat</title>
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Marked.js (Markdown Renderer) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="dark-mode">
+    <div class="app-container">
+        <!-- Sidebar: Status & Settings -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i data-lucide="activity"></i>
+                <span>Univista Insight</span>
+            </div>
+            
+            <div class="status-card">
+                <h3><i data-lucide="database"></i> Power BI Status</h3>
+                <div id="pbi-status" class="status-indicator disconnected">Disconnected</div>
+                <button id="fetch-data-btn" class="primary-btn">
+                    <i data-lucide="refresh-cw"></i> 데이터 동기화
+                </button>
+            </div>
+
+
+
+            <div class="settings-section">
+                <h3><i data-lucide="settings"></i> Configuration</h3>
+                <div class="input-group">
+                    <label for="gemini-key">Gemini API Key</label>
+                    <input type="password" id="gemini-key" placeholder="Enter API Key...">
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main: Chat Interface -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <h1>AI 데이터 도우미</h1>
+                <p>Power BI 데이터셋을 바탕으로 궁금한 점을 물어보세요.</p>
+            </header>
+
+            <div id="chat-messages" class="chat-messages">
+                <div class="message system">
+                    안녕하세요! 대한민국 고등교육 데이터 분석 전문가 <strong>IR AI </strong>입니다. <br>
+                    Power BI 실시간 연동을 통해 정확한 수치와 깊이 있는 인사이트를 제공해 드립니다. 궁금하신 대학 통계를 질문해 주세요!
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="data-selection-container">
+                    <div class="selection-header">
+                        <span><i data-lucide="layers"></i> 선택된 데이터 (최대 5개)</span>
+                        <span id="selection-count" class="count-badge">0 / 5</span>
+                    </div>
+                    <div id="data-pill-container" class="pill-container">
+                        <div class="placeholder-text">질문 입력창을 클릭하여 지표를 선택하세요.</div>
+                    </div>
+                </div>
+                <div class="input-wrapper">
+                    <input type="text" id="user-input" placeholder="선택한 데이터를 바탕으로 질문하세요..." disabled>
+                    <button id="send-btn" disabled>
+                        <i data-lucide="send"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Data Selection Modal -->
+    <div id="selection-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i data-lucide="list-checks"></i> 분석 지표 선택</h2>
+                <button id="close-modal" class="icon-btn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-search">
+                <i data-lucide="search"></i>
+                <input type="text" id="modal-search-input" placeholder="지표 이름 검색...">
+            </div>
+            <div id="modal-list-container" class="modal-list">
+                <div class="loading-text">데이터를 불러오는 중...</div>
+            </div>
+            <div class="modal-footer">
+                <span id="modal-selection-count">0 / 5 선택됨</span>
+                <button id="confirm-selection" class="confirm-btn">선택 완료</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gemini SDK -->
+    <script type="importmap">
+        {
+          "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+          }
+        }
+    </script>
+    <script src="app.js" type="module"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
