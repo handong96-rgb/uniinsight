@@ -57,7 +57,8 @@ async function initialize() {
             pbiStatus.classList.replace('connected', 'disconnected');
         }
 
-        const savedKey = localStorage.getItem('gemini_api_key');
+        // 보안을 위해 브라우저 종료 시 삭제되는 sessionStorage 사용
+        const savedKey = sessionStorage.getItem('gemini_api_key');
         if (savedKey) {
             geminiKeyInput.value = savedKey;
         }
@@ -396,9 +397,17 @@ fetchDataBtn.addEventListener('click', initialize);
 geminiKeyInput.addEventListener('change', () => {
     const newKey = geminiKeyInput.value.trim();
     if (newKey) {
-        localStorage.setItem('gemini_api_key', newKey);
-        addMessage('system', 'Gemini API 키가 저장되었습니다.');
+        sessionStorage.setItem('gemini_api_key', newKey);
+        addMessage('system', 'Gemini API 키가 임시 저장되었습니다. (브라우저 종료 시 삭제됨)');
         initialize();
+    } else {
+        // 키를 지웠을 때 동작 정지 및 키 삭제
+        sessionStorage.removeItem('gemini_api_key');
+        genAI = null;
+        model = null;
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+        addMessage('system', 'API 키가 삭제되었습니다. 다시 사용하려면 키를 입력해주세요.');
     }
 });
 
