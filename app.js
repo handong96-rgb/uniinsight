@@ -368,10 +368,15 @@ User Question: "${question}"`;
             Generate a professional, insight-driven report in Korean.
         `;
 
-        const finalResult = await model.generateContent(analysisPrompt);
-        
+        const finalResult = await model.generateContentStream(analysisPrompt);
+            
         loader.stop();
-        loader.element.innerHTML = typeof marked !== 'undefined' ? marked.parse(finalResult.response.text()) : finalResult.response.text();
+        let accumulatedText = '';
+        for await (const chunk of finalResult.stream) {
+            const chunkText = chunk.text();
+            accumulatedText += chunkText;
+            loader.element.innerHTML = typeof marked !== 'undefined' ? marked.parse(accumulatedText) : accumulatedText;
+        }
 
     } catch (error) {
         loader.stop();
